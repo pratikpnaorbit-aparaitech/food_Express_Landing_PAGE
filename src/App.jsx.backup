@@ -81,30 +81,11 @@ function App() {
 
             <div className="hero-image-area">
               <div className="circle-decoration" />
-
-              <div className="food-orbit">
-                <div className="orbit-path" />
-
-                <div className="orbit-item orbit-item-one">
-                  <span>🍔</span>
-                </div>
-
-                <div className="orbit-item orbit-item-two">
-                  <span>🍕</span>
-                </div>
-
-                <div className="orbit-item orbit-item-three">
-                  <span>🍜</span>
-                </div>
-              </div>
-
-              <div className="hero-main-circle">
-                <img
-                  className="hero-image"
-                  src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=85"
-                  alt="Fresh colourful meal"
-                />
-              </div>
+              <img
+                className="hero-image"
+                src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=85"
+                alt="Fresh colourful meal"
+              />
               <div className="floating-card rating-card">
                 <span className="floating-icon">⭐</span>
                 <div>
