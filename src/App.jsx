@@ -9,7 +9,48 @@ const categories = [
   ["🍰", "Desserts", "14 items"],
   ["🥤", "Drinks", "22 items"],
 ];
-
+const features = [
+  {
+    icon: "📈",
+    title: "Fast Delivery",
+    description: "Get your favourite food delivered quickly and safely.",
+  },
+  {
+    icon: "👨‍🍳",
+    title: "Expert Chefs",
+    description: "Fresh meals prepared by experienced professional chefs.",
+  },
+  {
+    icon: "📍",
+    title: "Live Order Tracking",
+    description: "Track your food order location in real time.",
+  },
+  {
+    icon: "🚫",
+    title: "No Hidden Charges",
+    description: "Transparent pricing with no unexpected extra charges.",
+  },
+  {
+    icon: "📶",
+    title: "Easy Ordering",
+    description: "Place your food order easily from any device.",
+  },
+  {
+    icon: "🛡️",
+    title: "Secure Payments",
+    description: "Safe and protected online payment experience.",
+  },
+  {
+    icon: "📱",
+    title: "Mobile Friendly",
+    description: "Order food smoothly using mobile, tablet or desktop.",
+  },
+  {
+    icon: "📁",
+    title: "Order History",
+    description: "View and manage all your previous food orders.",
+  },
+];
 function App() {
   return (
     <div>
