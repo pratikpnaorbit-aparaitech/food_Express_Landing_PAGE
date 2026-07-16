@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 
@@ -11,6 +12,52 @@ const categories = [
 ];
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("customer_token");
+    const storedUser = localStorage.getItem("foodExpressUser");
+
+    if (token && storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+
+        // Verify/Refresh profile details from backend
+        fetch("http://localhost:5000/api/auth/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(res => {
+          if (res.status === 401) {
+            localStorage.removeItem("customer_token");
+            localStorage.removeItem("foodExpressUser");
+            setUser(null);
+          } else {
+            return res.json();
+          }
+        })
+        .then(data => {
+          if (data && data.success) {
+            setUser(data.user);
+            localStorage.setItem("foodExpressUser", JSON.stringify(data.user));
+          }
+        })
+        .catch(err => console.error("Session verification error:", err));
+      } catch (err) {
+        console.error("Parse user error:", err);
+      }
+    }
+  }, []);
+
+  const handleLogout = (event) => {
+    if (event) event.preventDefault();
+    localStorage.removeItem("customer_token");
+    localStorage.removeItem("foodExpressUser");
+    setUser(null);
+    alert("Logged out successfully!");
+  };
   return (
     <div>
       <header className="header">
@@ -28,12 +75,25 @@ function App() {
           </nav>
 
           <div className="nav-auth-actions">
-            <Link to="/login" className="login-nav-button">
-              Login
-            </Link>
-            <Link to="/signup" className="nav-button">
-              Sign Up
-            </Link>
+            {user ? (
+              <>
+                <Link to="/profile" className="login-nav-button">
+                  My Profile
+                </Link>
+                <button onClick={handleLogout} className="nav-button" style={{ cursor: "pointer" }}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="login-nav-button">
+                  Login
+                </Link>
+                <Link to="/signup" className="nav-button">
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -57,10 +117,17 @@ function App() {
                 <a href="#menu" className="primary-button">
                   Explore Menu →
                 </a>
-                <Link to="/login" className="video-button">
-                  <span className="play-icon">→</span>
-                  Login to order
-                </Link>
+                {user ? (
+                  <Link to="/profile" className="video-button">
+                    <span className="play-icon">👤</span>
+                    My Profile
+                  </Link>
+                ) : (
+                  <Link to="/login" className="video-button">
+                    <span className="play-icon">→</span>
+                    Login to order
+                  </Link>
+                )}
               </div>
 
               <div className="hero-stats">
@@ -196,15 +263,66 @@ function App() {
         </section>
       </main>
 
-      <footer className="simple-footer" id="contact">
-        <div className="container footer-row">
-          <Link to="/" className="logo">
-            <span className="logo-icon">F</span>Food<span>Express</span>
-          </Link>
-          <p>© 2026 FoodExpress. Fresh food, fast delivery.</p>
-          <div className="footer-auth-links">
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Create account</Link>
+      <footer className="footer" id="contact">
+        <div className="container">
+          <div className="footer-grid">
+            <div className="footer-brand">
+              <Link to="/" className="logo footer-logo">
+                <span className="logo-icon">F</span>
+                Food<span>Express</span>
+              </Link>
+              <p>
+                Fresh and delicious meals delivered directly to your doorstep. Satisfying your cravings, anytime, anywhere.
+              </p>
+              <div className="social-links">
+                <a href="#facebook" aria-label="Facebook"><span>🌐</span></a>
+                <a href="#twitter" aria-label="Twitter"><span>🐦</span></a>
+                <a href="#instagram" aria-label="Instagram"><span>📸</span></a>
+                <a href="#linkedin" aria-label="LinkedIn"><span>💼</span></a>
+              </div>
+            </div>
+
+            <div className="footer-column">
+              <h3>Company</h3>
+              <a href="#about">About Us</a>
+              <a href="#careers">Careers</a>
+              <a href="#blog">Blog</a>
+              <a href="#contact">Contact</a>
+            </div>
+
+            <div className="footer-column">
+              <h3>Services</h3>
+              <a href="#delivery">Food Delivery</a>
+              <a href="#catering">Catering Services</a>
+              <a href="#partner">Become a Partner</a>
+              <a href="#privacy">Privacy Policy</a>
+            </div>
+
+            <div className="footer-column">
+              <h3>Account</h3>
+              {user ? (
+                <>
+                  <Link to="/profile">My Profile</Link>
+                  <a href="#logout" onClick={handleLogout}>
+                    Logout
+                  </a>
+                </>
+              ) : (
+                <>
+                  <Link to="/login">Login</Link>
+                  <Link to="/signup">Create Account</Link>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="footer-bottom">
+            <p>© 2026 FoodExpress. All rights reserved.</p>
+            <div>
+              <a href="#terms">Terms of Service</a>
+              <a href="#privacy">Privacy</a>
+              <a href="#security">Security</a>
+            </div>
           </div>
         </div>
       </footer>

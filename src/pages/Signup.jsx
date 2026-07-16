@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Auth.css";
 
 function Signup() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -13,6 +15,7 @@ function Signup() {
   });
 
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -21,9 +24,10 @@ function Signup() {
       ...previousData,
       [name]: type === "checkbox" ? checked : value,
     }));
+    setMessage("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (
@@ -52,8 +56,39 @@ function Signup() {
       return;
     }
 
-    setMessage("Account created successfully.");
-    console.log("Signup data:", formData);
+    setIsLoading(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        localStorage.setItem("foodExpressUser", JSON.stringify(data.user));
+        localStorage.setItem("customer_token", data.token);
+        alert("Registration completed successfully!");
+        navigate("/");
+      } else {
+        setMessage(data.message || "Registration failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      setMessage("Connection error. Please ensure the backend is running.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -118,6 +153,7 @@ function Signup() {
                   value={formData.fullName}
                   onChange={handleChange}
                   autoComplete="name"
+                  required
                 />
               </div>
 
@@ -133,6 +169,7 @@ function Signup() {
                     value={formData.email}
                     onChange={handleChange}
                     autoComplete="email"
+                    required
                   />
                 </div>
 
@@ -147,6 +184,7 @@ function Signup() {
                     value={formData.phone}
                     onChange={handleChange}
                     autoComplete="tel"
+                    required
                   />
                 </div>
               </div>
@@ -163,6 +201,7 @@ function Signup() {
                     value={formData.password}
                     onChange={handleChange}
                     autoComplete="new-password"
+                    required
                   />
                 </div>
 
@@ -177,6 +216,7 @@ function Signup() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     autoComplete="new-password"
+                    required
                   />
                 </div>
               </div>
@@ -187,6 +227,7 @@ function Signup() {
                   name="acceptTerms"
                   checked={formData.acceptTerms}
                   onChange={handleChange}
+                  required
                 />
 
                 <span>
@@ -197,13 +238,16 @@ function Signup() {
 
               {message && <p className="form-message">{message}</p>}
 
-              <button type="submit" className="auth-submit-button">
-                Create account
+              <button type="submit" className="auth-submit-button" disabled={isLoading}>
+                {isLoading ? "Creating account..." : "Create account"}
               </button>
             </form>
 
             <p className="auth-switch-text">
-              Already have an account? <Link to="/login">Login</Link>
+              Already have an account?{" "}
+              <Link to="/login">
+                Login
+              </Link>
             </p>
           </div>
         </div>
