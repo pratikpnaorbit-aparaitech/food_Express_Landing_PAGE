@@ -42,7 +42,7 @@ function Login() {
               Food<span>Express</span>
             </span>
           </Link>
-
+          <div className="brand-content"></div>"
           <div className="brand-content">
             <span className="brand-badge">Fast and fresh delivery</span>
 

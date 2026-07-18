@@ -10,11 +10,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  font-family:
-    Inter,
-    Arial,
-    Helvetica,
-    sans-serif;
+  font-family: Inter, Arial, Helvetica, sans-serif;
   background: #ffffff;
   color: #1f2937;
 }

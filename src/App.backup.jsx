@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
 import "./style.css";
 
-import foodOrdersScreen from "./assets/app-screenshots/food-orders.jpeg";
-import foodHomeScreen from "./assets/app-screenshots/food-home.jpeg";
-import foodProfileScreen from "./assets/app-screenshots/food-profile.jpeg";
-
 const categories = [
   ["🍕", "Pizza", "24 items"],
   ["🍔", "Burger", "18 items"],
@@ -13,132 +9,6 @@ const categories = [
   ["🍰", "Desserts", "14 items"],
   ["🥤", "Drinks", "22 items"],
 ];
-
-const mobileAppFeatures = [
-  {
-    icon: "🍽️",
-    text: "Discover restaurants and delicious meals near you",
-  },
-  {
-    icon: "📱",
-    text: "Order food easily through a clean mobile experience",
-  },
-  {
-    icon: "📍",
-    text: "Track active orders with real-time status updates",
-  },
-  {
-    icon: "🎟️",
-    text: "Use coupons, offers and FoodExpress Gold benefits",
-  },
-  {
-    icon: "❤️",
-    text: "Save favourite dishes for quick ordering",
-  },
-  {
-    icon: "💳",
-    text: "Manage payments, addresses and account details securely",
-  },
-];
-
-function MobileAppShowcase() {
-  return (
-    <section className="mobile-showcase-section" id="mobile-app">
-      <div className="container">
-        <div className="mobile-showcase-card">
-          <div className="mobile-showcase-content">
-            <span className="mobile-showcase-label">
-              FOOD EXPRESS MOBILE APP
-            </span>
-
-            <h2>
-              Your favourite food,
-              <span> just one tap away.</span>
-            </h2>
-
-            <p className="mobile-showcase-description">
-              Explore delicious meals, place orders, track your delivery and
-              manage your FoodExpress account from one simple mobile app.
-            </p>
-
-            <div className="mobile-showcase-features">
-              {mobileAppFeatures.map((feature) => (
-                <div className="mobile-showcase-feature" key={feature.text}>
-                  <span className="mobile-showcase-feature-icon">
-                    {feature.icon}
-                  </span>
-
-                  <p>{feature.text}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mobile-showcase-actions">
-              <a
-                href="#download-app"
-                className="mobile-store-button"
-                aria-label="Download FoodExpress from the App Store"
-              >
-                <span className="mobile-store-icon">●</span>
-
-                <span className="mobile-store-text">
-                  <small>Download on the</small>
-                  <strong>App Store</strong>
-                </span>
-              </a>
-
-              <a
-                href="#download-app"
-                className="mobile-store-button"
-                aria-label="Download FoodExpress from Google Play"
-              >
-                <span className="mobile-play-icon">▶</span>
-
-                <span className="mobile-store-text">
-                  <small>GET IT ON</small>
-                  <strong>Google Play</strong>
-                </span>
-              </a>
-            </div>
-          </div>
-
-          <div className="mobile-showcase-images">
-            <div className="mobile-showcase-glow" />
-
-            <div className="mobile-screen-card mobile-screen-orders">
-              <img
-                src={foodOrdersScreen}
-                alt="FoodExpress My Orders mobile screen"
-              />
-            </div>
-
-            <div className="mobile-screen-card mobile-screen-home">
-              <img
-                src={foodHomeScreen}
-                alt="FoodExpress home mobile screen"
-              />
-            </div>
-
-            <div className="mobile-screen-card mobile-screen-profile">
-              <img
-                src={foodProfileScreen}
-                alt="FoodExpress account mobile screen"
-              />
-            </div>
-
-            <div className="mobile-floating-badge mobile-floating-food">
-              🍔
-            </div>
-
-            <div className="mobile-floating-badge mobile-floating-fast">
-              ⚡
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function App() {
   return (
@@ -154,7 +24,6 @@ function App() {
             <a href="#home">Home</a>
             <a href="#menu">Menu</a>
             <a href="#features">Why us</a>
-            <a href="#mobile-app">Mobile App</a>
             <a href="#contact">Contact</a>
           </nav>
 
@@ -162,7 +31,6 @@ function App() {
             <Link to="/login" className="login-nav-button">
               Login
             </Link>
-
             <Link to="/signup" className="nav-button">
               Sign Up
             </Link>
@@ -177,11 +45,9 @@ function App() {
               <div className="hero-badge">
                 ⚡ Fast delivery at your doorstep
               </div>
-
               <h1>
                 Delicious food, <span>delivered fast.</span>
               </h1>
-
               <p className="hero-description">
                 Order your favourite meals from trusted restaurants and enjoy
                 fresh food delivered quickly, safely and conveniently.
@@ -191,7 +57,6 @@ function App() {
                 <a href="#menu" className="primary-button">
                   Explore Menu →
                 </a>
-
                 <Link to="/login" className="video-button">
                   <span className="play-icon">→</span>
                   Login to order
@@ -203,12 +68,10 @@ function App() {
                   <strong>10K+</strong>
                   <span>Happy customers</span>
                 </div>
-
                 <div className="stat-item">
                   <strong>500+</strong>
                   <span>Food choices</span>
                 </div>
-
                 <div className="stat-item">
                   <strong>30 min</strong>
                   <span>Average delivery</span>
@@ -242,19 +105,15 @@ function App() {
                   alt="Fresh colourful meal"
                 />
               </div>
-
               <div className="floating-card rating-card">
                 <span className="floating-icon">⭐</span>
-
                 <div>
                   <strong>4.9 customer rating</strong>
                   <span>Trusted by food lovers</span>
                 </div>
               </div>
-
               <div className="floating-card delivery-card">
                 <span className="floating-icon delivery-icon">🛵</span>
-
                 <div>
                   <strong>Fast delivery</strong>
                   <span>Fresh and on time</span>
@@ -264,21 +123,18 @@ function App() {
           </div>
         </section>
 
-        <section className="categories-section" id="menu">
+        <section className="categories-section">
           <div className="container">
             <div className="section-heading">
               <div>
                 <span className="section-label">Browse categories</span>
-
                 <h2>What would you like today?</h2>
-
                 <p>
                   Choose from popular food categories and discover your next
                   favourite meal.
                 </p>
               </div>
             </div>
-
             <div className="categories-grid">
               {categories.map(([icon, title, count], index) => (
                 <article
@@ -299,16 +155,13 @@ function App() {
             <div className="section-heading centered-heading">
               <div>
                 <span className="section-label">Why FoodExpress</span>
-
                 <h2>Food delivery made simple</h2>
-
                 <p>
                   Everything you need for a fast, safe and satisfying ordering
                   experience.
                 </p>
               </div>
             </div>
-
             <div className="features-grid">
               {[
                 [
@@ -341,19 +194,14 @@ function App() {
             </div>
           </div>
         </section>
-
-        <MobileAppShowcase />
       </main>
 
       <footer className="simple-footer" id="contact">
         <div className="container footer-row">
           <Link to="/" className="logo">
-            <span className="logo-icon">F</span>
-            Food<span>Express</span>
+            <span className="logo-icon">F</span>Food<span>Express</span>
           </Link>
-
           <p>© 2026 FoodExpress. Fresh food, fast delivery.</p>
-
           <div className="footer-auth-links">
             <Link to="/login">Login</Link>
             <Link to="/signup">Create account</Link>
