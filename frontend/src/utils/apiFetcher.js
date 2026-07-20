@@ -1,6 +1,6 @@
 import { API_BASE } from "../config";
 
-export const REMOTE_API_BASE = "https://food-express-landing-page-h9ph.onrender.com/api";
+export const REMOTE_API_BASE = "https://food-express-landing-page.onrender.com/api";
 
 /**
  * Smart fetch wrapper:
