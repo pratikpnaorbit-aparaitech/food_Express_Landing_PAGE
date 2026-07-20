@@ -19,9 +19,46 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
-  "https://food-express-lan-git-5bf6a6-pratikpnaorbit-aparaitechs-projects.vercel.app/",
+  "https://food-express-lan-git-5bf6a6-pratikpnaorbit-aparaitechs-projects.vercel.app",
   process.env.FRONTEND_URL
 ].filter(Boolean);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  const cleanOrigin = origin.toLowerCase().trim();
+  if (
+    cleanOrigin.includes("localhost") ||
+    cleanOrigin.includes("127.0.0.1") ||
+    cleanOrigin.includes("192.168.") ||
+    cleanOrigin.endsWith(".vercel.app") ||
+    cleanOrigin.endsWith(".onrender.com") ||
+    cleanOrigin.includes("vercel.app") ||
+    allowedOrigins.some(o => o.toLowerCase() === cleanOrigin)
+  ) {
+    return true;
+  }
+  return false;
+};
+
+// Dynamic CORS Middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (!origin || isAllowedOrigin(origin)) {
+    if (origin) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    } else {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+    }
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+  }
+  
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+  next();
+});
 
 app.use(cors({
   origin(origin, callback) {
@@ -30,10 +67,9 @@ app.use(cors({
     } else {
       callback(new Error("Not allowed by CORS"));
     }
+    return callback(null, false);
   },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+  credentials: true
 }));
 
 app.use(express.json());
