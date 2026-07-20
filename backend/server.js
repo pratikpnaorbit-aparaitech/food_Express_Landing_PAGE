@@ -19,9 +19,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
-  "https://food-express-landing-page-h9ph.onrender.com",
-  "https://food-express-landing-page.vercel.app",
-  "https://food-delivery-pi-drab.vercel.app",
+  "https://food-express-lan-git-5bf6a6-pratikpnaorbit-aparaitechs-projects.vercel.app",
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
@@ -63,9 +61,11 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (isAllowedOrigin(origin)) {
-      return callback(null, true);
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
     }
     return callback(null, false);
   },

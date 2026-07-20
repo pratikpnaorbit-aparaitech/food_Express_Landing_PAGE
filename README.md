@@ -4,7 +4,7 @@
 
 ```bash
 npm install
-npm run dev
+npm run dev:All
 ```
 
 Then open the local URL shown by Vite.
