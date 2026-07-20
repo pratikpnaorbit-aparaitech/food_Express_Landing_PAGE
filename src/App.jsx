@@ -1,19 +1,49 @@
 import { Link } from "react-router-dom";
 import "./style.css";
 
+import pizzaImage from "./assets/categories/pizza.jpg";
+import burgerImage from "./assets/categories/burger.jpg";
+import noodlesImage from "./assets/categories/noodles.jpg";
+import healthyImage from "./assets/categories/healthy.jpg";
+import dessertsImage from "./assets/categories/desserts.jpg";
+import drinksImage from "./assets/categories/drinks.jpg";
+
 import foodOrdersScreen from "./assets/app-screenshots/food-orders.jpeg";
 import foodHomeScreen from "./assets/app-screenshots/food-home.jpeg";
 import foodProfileScreen from "./assets/app-screenshots/food-profile.jpeg";
 
 const categories = [
-  ["🍕", "Pizza", "24 items"],
-  ["🍔", "Burger", "18 items"],
-  ["🍜", "Noodles", "16 items"],
-  ["🥗", "Healthy", "20 items"],
-  ["🍰", "Desserts", "14 items"],
-  ["🥤", "Drinks", "22 items"],
+  {
+    id: 1,
+    name: "Pizza",
+    image: pizzaImage,
+  },
+  {
+    id: 2,
+    name: "Burger",
+    image: burgerImage,
+  },
+  {
+    id: 3,
+    name: "Noodles",
+    image: noodlesImage,
+  },
+  {
+    id: 4,
+    name: "Healthy",
+    image: healthyImage,
+  },
+  {
+    id: 5,
+    name: "Desserts",
+    image: dessertsImage,
+  },
+  {
+    id: 6,
+    name: "Drinks",
+    image: drinksImage,
+  },
 ];
-
 const mobileAppFeatures = [
   {
     icon: "🍽️",
@@ -271,16 +301,21 @@ function App() {
                 </p>
               </div>
             </div>
-
             <div className="categories-grid">
-              {categories.map(([icon, title, count], index) => (
-                <article className="category-card" key={title}>
-                  <div className="category-icon">{icon}</div>
-                  <h3>{title}</h3>
-                  <p>{count}</p>
+              {categories.map((category) => (
+                <article className="category-card" key={category.id}>
+                  <div className="category-image-box">
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="category-image"
+                    />
+                  </div>
+
+                  <h3>{category.name}</h3>
                 </article>
               ))}
-            </div>
+            </div>{" "}
           </div>
         </section>
 
@@ -298,7 +333,7 @@ function App() {
                 </p>
               </div>
             </div>
-            index === 0
+
             <div className="features-grid">
               {[
                 [

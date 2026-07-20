@@ -2252,3 +2252,104 @@ button {
     gap: 10px 18px;
   }
 }
+/* Real image food categories */
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 40px;
+}
+
+.category-item {
+  border: none;
+  background: transparent;
+  text-align: center;
+  cursor: pointer;
+}
+
+.category-image-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid #eee5df;
+  border-radius: 20px;
+  background: #f7f7f7;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.category-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.category-name {
+  margin: 14px 0 0;
+  color: #17212f;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.category-item:hover .category-image-box {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 30px rgba(255, 79, 34, 0.18);
+}
+
+.category-item:hover .category-image {
+  transform: scale(1.07);
+}
+
+.category-item:hover .category-name {
+  color: #ff4f22;
+}
+
+@media (max-width: 1100px) {
+  .category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 14px;
+  }
+
+  .category-image-box {
+    border-radius: 16px;
+  }
+
+  .category-name {
+    margin-top: 10px;
+    font-size: 16px;
+  }
+}
+.feature-icon {
+  width: 80px;
+  height: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 20px;
+
+  background: #fff1e9;
+  border-radius: 22px;
+
+  font-size: 40px;
+
+  box-shadow: 0 10px 25px rgba(255, 79, 34, 0.12);
+
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.08);
+}
