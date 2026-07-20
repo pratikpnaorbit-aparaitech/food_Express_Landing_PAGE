@@ -113,10 +113,7 @@ function MobileAppShowcase() {
             </div>
 
             <div className="mobile-screen-card mobile-screen-home">
-              <img
-                src={foodHomeScreen}
-                alt="FoodExpress home mobile screen"
-              />
+              <img src={foodHomeScreen} alt="FoodExpress home mobile screen" />
             </div>
 
             <div className="mobile-screen-card mobile-screen-profile">
@@ -126,13 +123,9 @@ function MobileAppShowcase() {
               />
             </div>
 
-            <div className="mobile-floating-badge mobile-floating-food">
-              🍔
-            </div>
+            <div className="mobile-floating-badge mobile-floating-food">🍔</div>
 
-            <div className="mobile-floating-badge mobile-floating-fast">
-              ⚡
-            </div>
+            <div className="mobile-floating-badge mobile-floating-fast">⚡</div>
           </div>
         </div>
       </div>
@@ -281,10 +274,7 @@ function App() {
 
             <div className="categories-grid">
               {categories.map(([icon, title, count], index) => (
-                <article
-                  className={`category-card ${index === 0 ? "active" : ""}`}
-                  key={title}
-                >
+                <article className="category-card" key={title}>
                   <div className="category-icon">{icon}</div>
                   <h3>{title}</h3>
                   <p>{count}</p>
@@ -308,7 +298,7 @@ function App() {
                 </p>
               </div>
             </div>
-
+            index === 0
             <div className="features-grid">
               {[
                 [
@@ -345,18 +335,117 @@ function App() {
         <MobileAppShowcase />
       </main>
 
-      <footer className="simple-footer" id="contact">
-        <div className="container footer-row">
-          <Link to="/" className="logo">
-            <span className="logo-icon">F</span>
-            Food<span>Express</span>
-          </Link>
+      <footer className="food-footer" id="contact">
+        <div className="container">
+          <div className="food-footer-grid">
+            {/* Brand and contact column */}
+            <div className="food-footer-brand">
+              <Link to="/" className="food-footer-logo">
+                <span className="food-footer-logo-icon">F</span>
 
-          <p>© 2026 FoodExpress. Fresh food, fast delivery.</p>
+                <span className="food-footer-logo-text">
+                  Food<span>Express</span>
+                </span>
+              </Link>
 
-          <div className="footer-auth-links">
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Create account</Link>
+              <p className="food-footer-description">
+                Delicious food delivered fresh, fast and safely to your
+                doorstep. Explore your favourite meals and enjoy a simple
+                ordering experience.
+              </p>
+
+              <div className="food-footer-contact-list">
+                <a href="tel:+916364326342">
+                  <span>📞</span>
+                  +91 63643 26342
+                </a>
+
+                <a href="mailto:support@foodexpress.com">
+                  <span>✉️</span>
+                  support@foodexpress.com
+                </a>
+
+                <p>
+                  <span>📍</span>
+                  Baramati, Maharashtra, India
+                </p>
+              </div>
+            </div>
+
+            {/* Company links */}
+            <div className="food-footer-column">
+              <h3>Company</h3>
+
+              <a href="#home">Home</a>
+              <a href="#menu">Menu</a>
+              <a href="#features">Why us</a>
+              <a href="#mobile-app">Mobile App</a>
+              <a href="#contact">Contact</a>
+            </div>
+
+            {/* Customer links */}
+            <div className="food-footer-column">
+              <h3>Customer</h3>
+
+              <Link to="/login">Login</Link>
+              <Link to="/signup">Create account</Link>
+              <a href="#menu">Browse food</a>
+              <a href="#mobile-app">Download app</a>
+              <a href="mailto:support@foodexpress.com">Help & Support</a>
+            </div>
+
+            {/* Newsletter */}
+            <div className="food-footer-newsletter">
+              <h3>Stay Updated</h3>
+
+              <p>
+                Subscribe to get the latest food offers, discounts and delivery
+                updates.
+              </p>
+
+              <form
+                className="food-footer-form"
+                onSubmit={(event) => event.preventDefault()}
+              >
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  aria-label="Email address"
+                  required
+                />
+
+                <button type="submit">Subscribe</button>
+              </form>
+
+              <div className="food-footer-socials">
+                <a href="#instagram" aria-label="Instagram">
+                  IG
+                </a>
+
+                <a href="#facebook" aria-label="Facebook">
+                  FB
+                </a>
+
+                <a href="#youtube" aria-label="YouTube">
+                  YT
+                </a>
+
+                <a href="#twitter" aria-label="Twitter">
+                  X
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="food-footer-bottom">
+          <div className="container food-footer-bottom-row">
+            <p>© 2026 FoodExpress. All rights reserved.</p>
+
+            <div>
+              <a href="#privacy">Privacy Policy</a>
+              <a href="#terms">Terms & Conditions</a>
+            </div>
           </div>
         </div>
       </footer>
