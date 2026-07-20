@@ -19,35 +19,17 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
-  "https://food-express-landing-page-h9ph.onrender.com",
-  "https://food-express-landing-page.vercel.app",
-  "https://food-delivery-pi-drab.vercel.app",
+  "https://food-express-lan-git-5bf6a6-pratikpnaorbit-aparaitechs-projects.vercel.app/",
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
-const isAllowedOrigin = (origin) => {
-  if (!origin) return true;
-  if (
-    origin.startsWith("http://localhost:") ||
-    origin.startsWith("http://127.0.0.1:") ||
-    origin.startsWith("http://192.168.")
-  ) {
-    return true;
-  }
-  if (origin.endsWith(".vercel.app") || origin.endsWith(".onrender.com")) {
-    return true;
-  }
-  return allowedOrigins.includes(origin);
-};
-
-// Middleware
 app.use(cors({
-  origin: (origin, callback) => {
-    if (isAllowedOrigin(origin)) {
-      return callback(null, true);
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
     }
-    console.warn(`[CORS Guard] Rejected origin: ${origin}`);
-    return callback(null, false);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
