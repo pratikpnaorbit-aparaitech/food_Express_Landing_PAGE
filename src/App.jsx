@@ -8,6 +8,11 @@ import healthyImage from "./assets/categories/healthy.jpg";
 import dessertsImage from "./assets/categories/desserts.jpg";
 import drinksImage from "./assets/categories/drinks.jpg";
 
+import freshFoodImage from "./assets/features/fresh-food.jpg";
+import quickDeliveryImage from "./assets/features/quick-delivery.jpg";
+import secureOrderingImage from "./assets/features/secure-ordering.jpg";
+import friendlySupportImage from "./assets/features/friendly-support.jpg";
+
 import foodOrdersScreen from "./assets/app-screenshots/food-orders.jpeg";
 import foodHomeScreen from "./assets/app-screenshots/food-home.jpeg";
 import foodProfileScreen from "./assets/app-screenshots/food-profile.jpeg";
@@ -42,6 +47,35 @@ const categories = [
     id: 6,
     name: "Drinks",
     image: drinksImage,
+  },
+];
+const features = [
+  {
+    id: 1,
+    title: "Fresh food",
+    description: "Meals prepared with quality ingredients.",
+    image: freshFoodImage,
+  },
+
+  {
+    id: 2,
+    title: "Quick delivery",
+    description: "Your order reaches you fresh and fast.",
+    image: quickDeliveryImage,
+  },
+
+  {
+    id: 3,
+    title: "Secure ordering",
+    description: "A reliable and protected ordering process.",
+    image: secureOrderingImage,
+  },
+
+  {
+    id: 4,
+    title: "Friendly support",
+    description: "Helpful support whenever you need it.",
+    image: friendlySupportImage,
   },
 ];
 const mobileAppFeatures = [
@@ -333,34 +367,20 @@ function App() {
                 </p>
               </div>
             </div>
-
             <div className="features-grid">
-              {[
-                [
-                  "🥘",
-                  "Fresh food",
-                  "Meals prepared with quality ingredients.",
-                ],
-                [
-                  "⚡",
-                  "Quick delivery",
-                  "Your order reaches you fresh and fast.",
-                ],
-                [
-                  "🔒",
-                  "Secure ordering",
-                  "A reliable and protected ordering process.",
-                ],
-                [
-                  "💬",
-                  "Friendly support",
-                  "Helpful support whenever you need it.",
-                ],
-              ].map(([icon, title, text]) => (
-                <article className="feature-card" key={title}>
-                  <div className="feature-icon">{icon}</div>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
+              {features.map((feature) => (
+                <article className="feature-image-item" key={feature.id}>
+                  <div className="feature-real-image-box">
+                    <img
+                      src={feature.image}
+                      alt={feature.title}
+                      className="feature-real-image"
+                    />
+                  </div>
+
+                  <h3>{feature.title}</h3>
+
+                  <p>{feature.description}</p>
                 </article>
               ))}
             </div>
