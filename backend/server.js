@@ -28,13 +28,23 @@ const allowedOrigins = [
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+    if (
+      origin.includes("localhost") ||
+      origin.includes("127.0.0.1") ||
+      origin.endsWith(".vercel.app") ||
+      origin.endsWith(".onrender.com") ||
+      allowedOrigins.includes(origin)
+    ) {
       return callback(null, true);
     }
     return callback(null, true);
   },
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
 }));
+
+app.options("*", cors());
 app.use(express.json());
 
 // Helper function to read users
@@ -78,9 +88,9 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Health Check Endpoint
-app.get("/api/health", (req, res) => {
-  res.json({
+// Public Health Check Endpoints
+app.get(["/health", "/api/health"], (req, res) => {
+  res.status(200).json({
     status: "UP",
     service: "Food Express Backend API",
     timestamp: new Date().toISOString()
