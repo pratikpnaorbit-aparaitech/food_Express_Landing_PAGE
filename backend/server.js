@@ -19,25 +19,17 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
-  "https://food-express-landing-page-h9ph.onrender.com",
-  "https://food-express-landing-page.vercel.app",
+  "https://food-express-lan-git-5bf6a6-pratikpnaorbit-aparaitechs-projects.vercel.app/",
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
-// Middleware
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (
-      origin.includes("localhost") ||
-      origin.includes("127.0.0.1") ||
-      origin.endsWith(".vercel.app") ||
-      origin.endsWith(".onrender.com") ||
-      allowedOrigins.includes(origin)
-    ) {
-      return callback(null, true);
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
     }
-    return callback(null, true);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
