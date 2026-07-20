@@ -31,8 +31,12 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
 }));
+
+app.options("*", cors());
 app.use(express.json());
 
 // Helper function to read users
@@ -76,9 +80,9 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Health Check Endpoint
-app.get("/api/health", (req, res) => {
-  res.json({
+// Public Health Check Endpoints
+app.get(["/health", "/api/health"], (req, res) => {
+  res.status(200).json({
     status: "UP",
     service: "Food Express Backend API",
     timestamp: new Date().toISOString()
