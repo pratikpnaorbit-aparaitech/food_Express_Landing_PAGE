@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { API_BASE } from "./config";
+import { customFetch, pingBackend } from "./utils/apiFetcher";
 import "./style.css";
 
 const categories = [
@@ -16,6 +17,9 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Warm up backend server silently on page load
+    pingBackend();
+
     const token = localStorage.getItem("customer_token");
     const storedUser = localStorage.getItem("foodExpressUser");
 
@@ -24,8 +28,8 @@ function App() {
         const parsed = JSON.parse(storedUser);
         setUser(parsed);
 
-        // Verify/Refresh profile details from backend
-        fetch(`${API_BASE}/auth/profile`, {
+        // Verify/Refresh profile details from backend with retries
+        customFetch(`${API_BASE}/auth/profile`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

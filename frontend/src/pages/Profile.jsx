@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_BASE } from "../config";
+import { customFetch } from "../utils/apiFetcher";
 import "./Auth.css";
 import "./Profile.css";
 
@@ -28,7 +29,7 @@ function Profile() {
 
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`${API_BASE}/auth/profile`, {
+        const response = await customFetch(`${API_BASE}/auth/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -107,7 +108,7 @@ function Profile() {
     const token = localStorage.getItem("customer_token");
 
     try {
-      const response = await fetch(`${API_BASE}/auth/profile`, {
+      const response = await customFetch(`${API_BASE}/auth/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
