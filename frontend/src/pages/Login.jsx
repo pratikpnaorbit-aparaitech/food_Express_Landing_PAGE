@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_BASE } from "../config";
+import { customFetch, pingBackend } from "../utils/apiFetcher";
 import "./Auth.css";
 
 function Login() {
@@ -11,6 +12,10 @@ function Login() {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    pingBackend();
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -32,7 +37,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE}/auth/login`, {
+      const response = await customFetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +66,7 @@ function Login() {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Connection error. Please ensure the backend is running.");
+      setError("Connection error. The backend server might be starting up or unreachable. Please try again in a few seconds.");
     } finally {
       setIsLoading(false);
     }
