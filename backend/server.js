@@ -27,31 +27,49 @@ const allowedOrigins = [
 
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
+  const cleanOrigin = origin.toLowerCase().trim();
   if (
-    origin.startsWith("http://localhost:") ||
-    origin.startsWith("http://127.0.0.1:") ||
-    origin.startsWith("http://192.168.")
+    cleanOrigin.includes("localhost") ||
+    cleanOrigin.includes("127.0.0.1") ||
+    cleanOrigin.includes("192.168.") ||
+    cleanOrigin.endsWith(".vercel.app") ||
+    cleanOrigin.endsWith(".onrender.com") ||
+    cleanOrigin.includes("vercel.app") ||
+    allowedOrigins.some(o => o.toLowerCase() === cleanOrigin)
   ) {
     return true;
   }
-  if (origin.endsWith(".vercel.app") || origin.endsWith(".onrender.com")) {
-    return true;
-  }
-  return allowedOrigins.includes(origin);
+  return false;
 };
 
-// Middleware
+// Dynamic CORS Middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (!origin || isAllowedOrigin(origin)) {
+    if (origin) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    } else {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+    }
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+  }
+  
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+  next();
+});
+
 app.use(cors({
   origin: (origin, callback) => {
     if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
-    console.warn(`[CORS Guard] Rejected origin: ${origin}`);
     return callback(null, false);
   },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+  credentials: true
 }));
 
 app.use(express.json());
