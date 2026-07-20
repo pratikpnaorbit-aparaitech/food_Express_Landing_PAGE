@@ -273,7 +273,7 @@ app.post("/api/auth/login", async (req, res) => {
             email: ADMIN_EMAIL,
             role: "admin"
           },
-          redirectUrl: "https://cloudkitchen.aparaitech.org/admin/login"
+          redirectUrl: "https://food-delivery-pi-drab.vercel.app/"
         });
       } else {
         return res.status(401).json({ message: "Invalid Email or Password." });
