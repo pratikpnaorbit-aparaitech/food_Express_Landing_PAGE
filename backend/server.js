@@ -323,6 +323,20 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+// 404 Fallback Handler
+app.use((req, res) => {
+  res.status(404).json({ message: `Route ${req.originalUrl} not found.` });
+});
+
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error("Uncaught Server Error:", err);
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode).json({
+    message: err.message || "Internal Server Error"
+  });
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Food Express Backend server running at http://localhost:${PORT}`);
