@@ -26,13 +26,7 @@ const allowedOrigins = [
 
 // Middleware
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
-      return callback(null, true);
-    }
-    return callback(null, true);
-  },
+  origin: ["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173","food-express-landing-page.vercel.app"],
   credentials: true
 }));
 app.use(express.json());
