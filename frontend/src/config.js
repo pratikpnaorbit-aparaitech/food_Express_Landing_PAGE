@@ -1,4 +1,4 @@
-export const REMOTE_API_BASE = "https://food-delivery-fqqo.onrender.com/api";
+export const REMOTE_API_BASE = "https://food-express-landing-page-h9ph.onrender.com/api";
 
 /**
  * Ensures the API base URL always ends with '/api' and has no trailing slashes.
