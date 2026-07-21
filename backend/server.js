@@ -333,7 +333,7 @@ app.post("/api/auth/login", async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    res.json({
+    return res.json({
       success: true,
       role: "customer",
       token,
@@ -347,20 +347,27 @@ app.post("/api/auth/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ message: "Server error during login." });
+    if (res.headersSent) return;
+    return res.status(500).json({ message: "Server error during login." });
   }
 });
 
 // 404 Fallback Handler
-app.use((req, res) => {
-  res.status(404).json({ message: `Route ${req.originalUrl} not found.` });
+app.use((req, res, next) => {
+  if (res.headersSent) {
+    return next();
+  }
+  return res.status(404).json({ message: `Route ${req.originalUrl} not found.` });
 });
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
   console.error("Uncaught Server Error:", err);
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode).json({
+  const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
+  return res.status(statusCode).json({
     message: err.message || "Internal Server Error"
   });
 });
