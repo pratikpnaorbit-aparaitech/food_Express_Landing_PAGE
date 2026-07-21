@@ -178,14 +178,12 @@ app.get("/api/auth/profile", authenticateToken, (req, res) => {
 // Update Profile Endpoint (Protected)
 app.put("/api/auth/profile", authenticateToken, async (req, res) => {
   try {
-    if (!req.body || typeof req.body !== "object") {
-      return res.status(400).json({
-        success: false,
-        message: "Request body is missing"
-      });
-    }
-
-    const { fullName, email, phone, profilePhoto, address } = req.body;
+    const body = req.body || {};
+    const fullName = body.fullName ? String(body.fullName).trim() : "";
+    const email = body.email ? String(body.email).trim() : "";
+    const phone = body.phone ? String(body.phone).trim() : "";
+    const profilePhoto = body.profilePhoto || "";
+    const address = body.address || "";
 
     if (req.user.role === "admin") {
       return res.status(400).json({ message: "Admin profile cannot be updated." });
@@ -240,17 +238,14 @@ app.put("/api/auth/profile", authenticateToken, async (req, res) => {
 // Signup Endpoint (Customer only)
 app.post("/api/auth/signup", async (req, res) => {
   try {
-    if (!req.body || typeof req.body !== "object") {
-      return res.status(400).json({
-        success: false,
-        message: "Request body is missing"
-      });
-    }
-
-    const { fullName, email, phone, password } = req.body;
+    const body = req.body || {};
+    const fullName = body.fullName ? String(body.fullName).trim() : "";
+    const email = body.email ? String(body.email).trim() : "";
+    const phone = body.phone ? String(body.phone).trim() : "";
+    const password = body.password ? String(body.password) : "";
 
     if (!fullName || !email || !phone || !password) {
-      return res.status(400).json({ message: "Please fill in all fields." });
+      return res.status(400).json({ success: false, message: "Please fill in all fields." });
     }
 
     const lowerEmail = email.toLowerCase().trim();
@@ -309,19 +304,14 @@ app.post("/api/auth/signup", async (req, res) => {
 // Login Endpoint (Admin and Customer)
 app.post("/api/auth/login", async (req, res) => {
   try {
-    if (!req.body || typeof req.body !== "object") {
-      return res.status(400).json({
-        success: false,
-        message: "Request body is missing"
-      });
-    }
-
-    const email = req.body.email;
-    const password = req.body.password;
+    const body = req.body || {};
+    const email = body.email ? String(body.email).trim() : "";
+    const password = body.password ? String(body.password) : "";
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Please enter email and password." });
+      return res.status(400).json({ success: false, message: "Please enter email and password." });
     }
+
 
 
     const lowerEmail = email.toLowerCase().trim();
