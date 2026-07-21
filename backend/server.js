@@ -26,14 +26,32 @@ const connectDB = async () => {
     } catch (dnsErr) {}
 
     const conn = await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 8000,
+      family: 4
     });
     console.log(`\n✅ MongoDB Atlas Connected: ${conn.connection.host}\n`);
     return conn;
   } catch (error) {
     console.error(`\n❌ MongoDB Connection Error: ${error.message}\n`);
+    console.error(`👉 IMPORTANT: Ensure '0.0.0.0/0' (Allow Access From Anywhere) is whitelisted in your MongoDB Atlas Network Access settings!\n`);
   }
 };
+
+// Auto-reconnect helper if database is disconnected or cold-started
+const ensureDbConnected = async () => {
+  if (mongoose.connection.readyState !== 1) {
+    console.log("ℹ️ MongoDB connection not active. Re-attempting connection to MongoDB Atlas...");
+    try {
+      await mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000,
+        family: 4
+      });
+    } catch (err) {
+      console.error("❌ MongoDB reconnect attempt failed:", err.message);
+    }
+  }
+};
+
 
 
 const allowedOrigins = [
@@ -309,6 +327,14 @@ const handleSignup = async (req, res) => {
       return res.status(400).json({ message: "Email is already registered." });
     }
 
+    await ensureDbConnected();
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        message: "Database connection unavailable. Please ensure 0.0.0.0/0 (Allow Access From Anywhere) is whitelisted in your MongoDB Atlas Network Access settings."
+      });
+    }
+
     // Check if user already exists in MongoDB
     const existingUser = await User.findOne({ email: lowerEmail });
     if (existingUser) {
@@ -394,10 +420,19 @@ const handleLogin = async (req, res) => {
     }
 
     // 2. Customer Flow (MongoDB Atlas)
+    await ensureDbConnected();
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        message: "Database connection unavailable. Please ensure 0.0.0.0/0 (Allow Access From Anywhere) is whitelisted in your MongoDB Atlas Network Access settings."
+      });
+    }
+
     const user = await User.findOne({ email: lowerEmail });
     if (!user) {
       return res.status(401).json({ message: "Invalid Email or Password." });
     }
+
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
