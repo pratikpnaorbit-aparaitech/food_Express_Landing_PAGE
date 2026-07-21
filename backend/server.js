@@ -24,16 +24,17 @@ const ROOT_USERS_FILE = path.join(__dirname, "users.json");
 // Helper function to read users
 function readUsers() {
   try {
-    if (fs.existsSync(USERS_FILE)) {
-      const data = fs.readFileSync(USERS_FILE, "utf8");
-      return JSON.parse(data || "[]");
-    }
     if (fs.existsSync(ROOT_USERS_FILE)) {
       const data = fs.readFileSync(ROOT_USERS_FILE, "utf8");
+      return JSON.parse(data || "[]");
+    }
+    if (fs.existsSync(USERS_FILE)) {
+      const data = fs.readFileSync(USERS_FILE, "utf8");
       const parsed = JSON.parse(data || "[]");
-      fs.writeFileSync(USERS_FILE, JSON.stringify(parsed, null, 2));
+      fs.writeFileSync(ROOT_USERS_FILE, JSON.stringify(parsed, null, 2));
       return parsed;
     }
+    fs.writeFileSync(ROOT_USERS_FILE, JSON.stringify([], null, 2));
     fs.writeFileSync(USERS_FILE, JSON.stringify([], null, 2));
     return [];
   } catch (error) {
@@ -42,25 +43,32 @@ function readUsers() {
   }
 }
 
-// Helper function to write users
+// Helper function to write users (syncs to both backend/users.json and backend/data/users.json)
 function writeUsers(users) {
   try {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    const jsonStr = JSON.stringify(users, null, 2);
+    fs.writeFileSync(ROOT_USERS_FILE, jsonStr);
+    fs.writeFileSync(USERS_FILE, jsonStr);
   } catch (error) {
     console.error("Error writing users file:", error);
   }
 }
 
 
+
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
+  "https://food-express-landing-page-f8m9.onrender.com",
+  "https://food-express-landing-page-f8m9.onrender.com/api",
   "https://food-express-landing-page-h9ph.onrender.com",
+  "https://food-express-landing-page-h9ph.onrender.com/api",
   "https://food-express-landing-page.vercel.app",
   "https://food-delivery-pi-drab.vercel.app",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
+
 
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
@@ -236,8 +244,12 @@ const handleGetProfile = (req, res) => {
 app.get([
   "/api/auth/profile", "/api/auth/profile/",
   "/auth/profile", "/auth/profile/",
+  "/api/profile", "/api/profile/",
+  "/profile", "/profile/",
   "/api/auth/me", "/api/auth/me/",
-  "/auth/me", "/auth/me/"
+  "/auth/me", "/auth/me/",
+  "/api/me", "/api/me/",
+  "/me", "/me/"
 ], authenticateToken, handleGetProfile);
 
 // Update Profile Endpoint (Protected)
@@ -302,7 +314,9 @@ const handleUpdateProfile = async (req, res) => {
 
 app.put([
   "/api/auth/profile", "/api/auth/profile/",
-  "/auth/profile", "/auth/profile/"
+  "/auth/profile", "/auth/profile/",
+  "/api/profile", "/api/profile/",
+  "/profile", "/profile/"
 ], authenticateToken, handleUpdateProfile);
 
 // Signup Endpoint (Customer only)
@@ -374,8 +388,12 @@ const handleSignup = async (req, res) => {
 app.post([
   "/api/auth/signup", "/api/auth/signup/",
   "/auth/signup", "/auth/signup/",
+  "/api/signup", "/api/signup/",
+  "/signup", "/signup/",
   "/api/auth/register", "/api/auth/register/",
-  "/auth/register", "/auth/register/"
+  "/auth/register", "/auth/register/",
+  "/api/register", "/api/register/",
+  "/register", "/register/"
 ], handleSignup);
 
 // Login Endpoint (Admin & Customer)
@@ -454,8 +472,11 @@ const handleLogin = async (req, res) => {
 
 app.post([
   "/api/auth/login", "/api/auth/login/",
-  "/auth/login", "/auth/login/"
+  "/auth/login", "/auth/login/",
+  "/api/login", "/api/login/",
+  "/login", "/login/"
 ], handleLogin);
+
 
 // 404 Fallback Handler
 app.use((req, res, next) => {

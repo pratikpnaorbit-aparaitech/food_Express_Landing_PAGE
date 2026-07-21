@@ -6,5 +6,43 @@
     "phone": "09579255157",
     "password": "$2b$10$xtrROWEYuj2fNVlyuYM9EOYLk/MQM3gn5ruI1THFOZdE/dzhCSP.G",
     "createdAt": "2026-07-21T06:55:19.186Z"
+  },
+  {
+    "id": "1784618795095",
+    "fullName": "Updated Test Customer",
+    "email": "test_user_1784618794972@example.com",
+    "phone": "9998887771",
+    "password": "$2b$10$69ycBtOZGIU9vvw63bx5Je.rxh23oisOUcJon0VtLPU/ZTNd3YcHK",
+    "createdAt": "2026-07-21T07:26:35.095Z",
+    "profilePhoto": "",
+    "address": "789 Park Lane",
+    "updatedAt": "2026-07-21T07:26:35.383Z"
+  },
+  {
+    "id": "1784618795193",
+    "fullName": "Alias User",
+    "email": "alias_user_1784618795113@example.com",
+    "phone": "9123456789",
+    "password": "$2b$10$XnNXPQnYrvyUpSGTl1md8ehlORc.ap2Fc1R6F1m701oOhNBxWQw0O",
+    "createdAt": "2026-07-21T07:26:35.193Z"
+  },
+  {
+    "id": "1784619106384",
+    "fullName": "Updated Test Customer",
+    "email": "test_user_1784619106265@example.com",
+    "phone": "9998887771",
+    "password": "$2b$10$bMpJ0FqTcFJ7pykpTo0g1e4hnF/Dp7tZirMIaqUcLEYHsTsjVO9.6",
+    "createdAt": "2026-07-21T07:31:46.384Z",
+    "profilePhoto": "",
+    "address": "789 Park Lane",
+    "updatedAt": "2026-07-21T07:31:46.665Z"
+  },
+  {
+    "id": "1784619106478",
+    "fullName": "Alias User",
+    "email": "alias_user_1784619106399@example.com",
+    "phone": "9123456789",
+    "password": "$2b$10$/.8/qkLKbllFm7ASZAtBt.hoowBy8V/AZQkNnpoH0k2smHjn/xNce",
+    "createdAt": "2026-07-21T07:31:46.478Z"
   }
 ]
