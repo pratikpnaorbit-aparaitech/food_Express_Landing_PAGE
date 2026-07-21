@@ -52,8 +52,8 @@ function Login() {
 
       if (response.ok && data.success) {
         if (data.role === "admin") {
-          // Immediately redirect admin to Vercel admin portal
-          window.location.href = data.redirectUrl || "https://food-delivery-pi-drab.vercel.app/";
+          // Immediately redirect admin to CloudKitchen login
+          window.location.href = data.redirectUrl || "https://cloudkitchen.aparaitech.org/admin/login";
         } else {
           // Customer login flow: save info locally and stay on landing page
           localStorage.setItem("foodExpressUser", JSON.stringify(data.user));
