@@ -72,8 +72,53 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "10mb", type: ["application/json", "application/*+json", "text/plain"] }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+
+// Fallback JSON parser in case proxy/client sends body as raw string or Buffer
+app.use((req, res, next) => {
+  if (typeof req.body === "string" && req.body.trim()) {
+    try {
+      req.body = JSON.parse(req.body);
+    } catch (e) {}
+  }
+  if (Buffer.isBuffer(req.body)) {
+    try {
+      req.body = JSON.parse(req.body.toString("utf8"));
+    } catch (e) {}
+  }
+  next();
+});
+
+// Raw Body Stream Reader Fallback Middleware for Proxy Edge Cases (Render / Cloudflare)
+app.use((req, res, next) => {
+  if (["POST", "PUT", "PATCH"].includes(req.method) && (!req.body || Object.keys(req.body).length === 0)) {
+    const contentLength = req.headers["content-length"];
+    if (contentLength && parseInt(contentLength, 10) > 0) {
+      let data = "";
+      req.setEncoding("utf8");
+      req.on("data", (chunk) => {
+        data += chunk;
+      });
+      req.on("end", () => {
+        if (data && data.trim()) {
+          try {
+            req.body = JSON.parse(data);
+          } catch (err) {
+            try {
+              const querystring = require("querystring");
+              req.body = querystring.parse(data);
+            } catch (qsErr) {}
+          }
+        }
+        next();
+      });
+      return;
+    }
+  }
+  next();
+});
 
 // Detailed Request Logger Middleware
 app.use((req, res, next) => {
@@ -85,6 +130,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+
 
 // Helper function to read users
 function readUsers() {
