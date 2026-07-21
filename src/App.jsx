@@ -49,6 +49,7 @@ const categories = [
     image: drinksImage,
   },
 ];
+const infiniteCategories = [...categories, ...categories];
 const features = [
   {
     id: 1,
@@ -78,6 +79,7 @@ const features = [
     image: friendlySupportImage,
   },
 ];
+const infiniteFeatures = [...features, ...features];
 const mobileAppFeatures = [
   {
     icon: "🍽️",
@@ -274,7 +276,11 @@ function App() {
             </div>
 
             <div className="hero-image-area">
-              <div className="circle-decoration" />
+              <div className="circle-decoration">
+                <div className="circle circle-1"></div>
+                <div className="circle circle-2"></div>
+                <div className="circle circle-3"></div>
+              </div>
 
               <div className="food-orbit">
                 <div className="orbit-path" />
@@ -335,21 +341,23 @@ function App() {
                 </p>
               </div>
             </div>
-            <div className="categories-grid">
-              {categories.map((category) => (
-                <article className="category-card" key={category.id}>
-                  <div className="category-image-box">
-                    <img
-                      src={category.image}
-                      alt={category.name}
-                      className="category-image"
-                    />
-                  </div>
+            <div className="category-slider-container">
+              <div className="category-slider-track">
+                {infiniteCategories.map((category, index) => (
+                  <article className="category-card" key={index}>
+                    <div className="category-image-box">
+                      <img
+                        src={category.image}
+                        alt={category.name}
+                        className="category-image"
+                      />
+                    </div>
 
-                  <h3>{category.name}</h3>
-                </article>
-              ))}
-            </div>{" "}
+                    <h3>{category.name}</h3>
+                  </article>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -367,22 +375,24 @@ function App() {
                 </p>
               </div>
             </div>
-            <div className="features-grid">
-              {features.map((feature) => (
-                <article className="feature-image-item" key={feature.id}>
-                  <div className="feature-real-image-box">
-                    <img
-                      src={feature.image}
-                      alt={feature.title}
-                      className="feature-real-image"
-                    />
-                  </div>
+            <div className="slider-container">
+              <div className="slider-track reverse-slider">
+                {infiniteFeatures.map((feature, index) => (
+                  <article className="feature-image-item" key={index}>
+                    <div className="feature-real-image-box">
+                      <img
+                        src={feature.image}
+                        alt={feature.title}
+                        className="feature-real-image"
+                      />
+                    </div>
 
-                  <h3>{feature.title}</h3>
+                    <h3>{feature.title}</h3>
 
-                  <p>{feature.description}</p>
-                </article>
-              ))}
+                    <p>{feature.description}</p>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </section>

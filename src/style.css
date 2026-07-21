@@ -357,12 +357,49 @@ button {
 
 .circle-decoration {
   position: absolute;
-  width: 480px;
-  height: 480px;
-  border: 40px solid rgba(255, 90, 31, 0.08);
-  border-radius: 50%;
+  width: 620px;
+  height: 620px;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
 }
 
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 98, 0, 0.3);
+
+  animation: rotateCircle 20s linear infinite;
+}
+
+.circle-1 {
+  width: 620px;
+  height: 620px;
+}
+
+.circle-2 {
+  width: 500px;
+  height: 500px;
+
+  top: 60px;
+  left: 60px;
+
+  border-color: rgba(255, 98, 0, 0.15);
+
+  animation-direction: reverse;
+}
+
+.circle-3 {
+  width: 380px;
+  height: 380px;
+
+  top: 120px;
+  left: 120px;
+
+  border-color: rgba(255, 98, 0, 0.08);
+}
 .hero-main-circle {
   position: relative;
   z-index: 4;
@@ -372,6 +409,11 @@ button {
   border-radius: 50%;
   background: #ffffff;
   animation: heroFloat 4s ease-in-out infinite;
+  overflow: hidden;
+
+  box-shadow:
+    0 0 50px rgba(255, 115, 0, 0.2),
+    0 0 100px rgba(255, 115, 0, 0.15);
 }
 
 .hero-image {
@@ -389,8 +431,8 @@ button {
 .food-orbit {
   position: absolute;
   z-index: 3;
-  width: 560px; /* Orbit चा घेर थोडा वाढवला आहे */
-  height: 560px;
+  width: 500px;
+  height: 500px;
   border-radius: 50%;
   animation: rotateOrbit 14s linear infinite;
 }
@@ -404,20 +446,18 @@ button {
 
 /* Orbit Items (Big Size Implemented) */
 .orbit-item {
-  position: absolute;
-  width: 200px; /* Size आधीपेक्षा मोठी केली */
-  height: 200px; /* Size आधीपेक्षा मोठी केली */
+  width: 170px;
+  height: 170px;
+
+  border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.15);
-  z-index: 10;
 }
 
 .orbit-item span {
-  font-size: 100px; /* Emoji मोठा दिसण्यासाठी */
+  font-size: 90px;
   display: inline-block;
   animation: keepStraight 14s linear infinite; /* फिरताना इमेजेस सरळ ठेवेल */
 }
@@ -459,6 +499,9 @@ button {
   background: rgba(255, 255, 255, 0.93);
   box-shadow: var(--shadow);
   backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 }
 
 .floating-card strong,
@@ -2282,11 +2325,12 @@ button {
 }
 
 .category-image {
-  width: 100%;
-  height: 100%;
-  display: block;
+  width: 140px;
+  height: 140px;
+
   object-fit: cover;
-  transition: transform 0.3s ease;
+
+  border-radius: 18px;
 }
 
 .category-name {
@@ -2451,5 +2495,105 @@ button {
   .feature-image-item {
     padding: 0 0 22px;
     border-radius: 22px;
+  }
+}
+.slider-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin-top: 40px;
+}
+
+.slider-track {
+  display: flex;
+  gap: 30px;
+  width: max-content;
+  animation: scrollCards 15s linear infinite;
+}
+
+.slider-track:hover {
+  animation-play-state: paused;
+}
+
+.feature-image-item {
+  min-width: 300px;
+  flex-shrink: 0;
+}
+
+@keyframes scrollCards {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+.category-slider-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin-top: 40px;
+}
+
+.category-slider-track {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 24px;
+  width: max-content;
+  animation: categoryScroll 15s linear infinite;
+}
+
+.category-slider-track:hover {
+  animation-play-state: paused;
+}
+
+.category-card {
+  min-width: 180px;
+  max-width: 180px;
+
+  flex-shrink: 0;
+
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 24px;
+
+  padding: 18px 12px;
+
+  text-align: center;
+}
+@keyframes categoryScroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes rotateCircle {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+.reverse-slider {
+  animation: reverseScroll 15s linear infinite;
+}
+
+.reverse-slider:hover {
+  animation-play-state: paused;
+}
+
+@keyframes reverseScroll {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
   }
 }
