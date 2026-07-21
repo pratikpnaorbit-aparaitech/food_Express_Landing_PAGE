@@ -73,5 +73,24 @@
     "phone": "9876543210",
     "password": "$2b$10$TocZLmJgG207hnVs75tRUuzHjASteHFpQWF0JDvr3yx/3MLcF6fra",
     "createdAt": "2026-07-21T05:49:21.476Z"
+  },
+  {
+    "id": "1784613837920",
+    "fullName": "Updated Customer Name",
+    "email": "customer_1784613837426@test.com",
+    "phone": "9998887770",
+    "password": "$2b$10$f39HXJAcNv4m9zRenpF/h.Z8Oz3tw6NwB11IPeXx6Fp3Rwwww./3C",
+    "createdAt": "2026-07-21T06:03:57.920Z",
+    "profilePhoto": "",
+    "address": "456 Main St",
+    "updatedAt": "2026-07-21T06:03:58.249Z"
+  },
+  {
+    "id": "1784613838098",
+    "fullName": "Alias Customer",
+    "email": "customer_alias_1784613837972@test.com",
+    "phone": "9876543210",
+    "password": "$2b$10$9WsuXhTF7yfzWfS4/.1dke1/uTO/nfOj7P7CSz.MUhZ6lVH3xDAka",
+    "createdAt": "2026-07-21T06:03:58.098Z"
   }
 ]
