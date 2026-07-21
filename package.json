@@ -2,12 +2,13 @@
   "name": "food-express-landing-page",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
+    "start": "node backend/server.js",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "npm run dev --prefix frontend",
     "dev:backend": "npm run dev --prefix backend",
-    "start:backend": "npm run start --prefix backend",
+    "dev:server": "node backend/server.js",
+    "start:backend": "node backend/server.js",
     "build:frontend": "npm run build --prefix frontend"
   },
   "devDependencies": {
