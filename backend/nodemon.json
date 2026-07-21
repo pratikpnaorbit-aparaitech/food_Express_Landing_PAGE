@@ -1,0 +1,9 @@
+{
+  "watch": ["server.js", "src", "routes", "controllers", "middleware", "models"],
+  "ext": "js,mjs,cjs,json",
+  "ignore": [
+    "users.json",
+    "data/users.json",
+    "*.json"
+  ]
+}

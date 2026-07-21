@@ -2,10 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
-const User = require("./models/User");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,44 +13,43 @@ const JWT_SECRET = process.env.JWT_SECRET || "food_express_secret_key_123";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@foodexpress.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin@123";
 
-const dns = require("dns");
+const DATA_DIR = path.join(__dirname, "data");
+if (!fs.existsSync(DATA_DIR)) {
+  try { fs.mkdirSync(DATA_DIR, { recursive: true }); } catch (e) {}
+}
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://demofoodexpress:Aparaitech2129@cluster0.a0k0afk.mongodb.net/?appName=Cluster0";
+const USERS_FILE = path.join(DATA_DIR, "users.json");
+const ROOT_USERS_FILE = path.join(__dirname, "users.json");
 
-// Connect to MongoDB Atlas
-const connectDB = async () => {
+// Helper function to read users
+function readUsers() {
   try {
-    try {
-      dns.setServers(["8.8.8.8", "8.8.4.4"]);
-    } catch (dnsErr) {}
-
-    const conn = await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 8000,
-      family: 4
-    });
-    console.log(`\n✅ MongoDB Atlas Connected: ${conn.connection.host}\n`);
-    return conn;
-  } catch (error) {
-    console.error(`\n❌ MongoDB Connection Error: ${error.message}\n`);
-    console.error(`👉 IMPORTANT: Ensure '0.0.0.0/0' (Allow Access From Anywhere) is whitelisted in your MongoDB Atlas Network Access settings!\n`);
-  }
-};
-
-// Auto-reconnect helper if database is disconnected or cold-started
-const ensureDbConnected = async () => {
-  if (mongoose.connection.readyState !== 1) {
-    console.log("ℹ️ MongoDB connection not active. Re-attempting connection to MongoDB Atlas...");
-    try {
-      await mongoose.connect(MONGODB_URI, {
-        serverSelectionTimeoutMS: 5000,
-        family: 4
-      });
-    } catch (err) {
-      console.error("❌ MongoDB reconnect attempt failed:", err.message);
+    if (fs.existsSync(USERS_FILE)) {
+      const data = fs.readFileSync(USERS_FILE, "utf8");
+      return JSON.parse(data || "[]");
     }
+    if (fs.existsSync(ROOT_USERS_FILE)) {
+      const data = fs.readFileSync(ROOT_USERS_FILE, "utf8");
+      const parsed = JSON.parse(data || "[]");
+      fs.writeFileSync(USERS_FILE, JSON.stringify(parsed, null, 2));
+      return parsed;
+    }
+    fs.writeFileSync(USERS_FILE, JSON.stringify([], null, 2));
+    return [];
+  } catch (error) {
+    console.error("Error reading users file:", error);
+    return [];
   }
-};
+}
 
+// Helper function to write users
+function writeUsers(users) {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  } catch (error) {
+    console.error("Error writing users file:", error);
+  }
+}
 
 
 const allowedOrigins = [
@@ -63,7 +61,6 @@ const allowedOrigins = [
   "https://food-delivery-pi-drab.vercel.app",
   process.env.FRONTEND_URL
 ].filter(Boolean);
-
 
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
@@ -195,14 +192,15 @@ app.get(["/health", "/api/health", "/health/", "/api/health/"], (req, res) => {
   res.status(200).json({
     status: "UP",
     service: "Food Express Backend API",
-    database: mongoose.connection.readyState === 1 ? "CONNECTED" : "DISCONNECTED",
     timestamp: new Date().toISOString()
   });
 });
 
 // Get Profile Endpoint (Protected)
-const handleGetProfile = async (req, res) => {
+const handleGetProfile = (req, res) => {
   try {
+    const users = readUsers();
+
     if (req.user.role === "admin") {
       return res.json({
         success: true,
@@ -214,7 +212,7 @@ const handleGetProfile = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.id).select("-password");
+    const user = users.find(u => u.id === req.user.id);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -222,7 +220,7 @@ const handleGetProfile = async (req, res) => {
     return res.json({
       success: true,
       user: {
-        id: user._id.toString(),
+        id: user.id,
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
@@ -263,36 +261,38 @@ const handleUpdateProfile = async (req, res) => {
     }
 
     const lowerEmail = email.toLowerCase().trim();
+    const users = readUsers();
 
-    const user = await User.findById(req.user.id);
-    if (!user) {
+    const userIndex = users.findIndex(u => u.id === req.user.id);
+    if (userIndex === -1) {
       return res.status(404).json({ message: "User not found." });
     }
 
     // Check if email already taken by someone else
-    const emailTaken = await User.findOne({ email: lowerEmail, _id: { $ne: req.user.id } });
+    const emailTaken = users.some((u, idx) => u.email.toLowerCase() === lowerEmail && idx !== userIndex);
     if (emailTaken || lowerEmail === ADMIN_EMAIL.toLowerCase()) {
       return res.status(400).json({ message: "Email is already in use by another account." });
     }
 
-    user.fullName = fullName.trim();
-    user.email = lowerEmail;
-    user.phone = phone.trim();
-    user.profilePhoto = profilePhoto || "";
-    user.address = address || "";
+    users[userIndex].fullName = fullName.trim();
+    users[userIndex].email = lowerEmail;
+    users[userIndex].phone = phone.trim();
+    users[userIndex].profilePhoto = profilePhoto || "";
+    users[userIndex].address = address || "";
+    users[userIndex].updatedAt = new Date().toISOString();
 
-    await user.save();
+    writeUsers(users);
 
     return res.json({
       success: true,
       message: "Profile updated successfully.",
       user: {
-        id: user._id.toString(),
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        profilePhoto: user.profilePhoto,
-        address: user.address,
+        id: users[userIndex].id,
+        fullName: users[userIndex].fullName,
+        email: users[userIndex].email,
+        phone: users[userIndex].phone,
+        profilePhoto: users[userIndex].profilePhoto,
+        address: users[userIndex].address,
         role: "customer"
       }
     });
@@ -307,7 +307,7 @@ app.put([
   "/auth/profile", "/auth/profile/"
 ], authenticateToken, handleUpdateProfile);
 
-// Signup Endpoint (Customer only - MongoDB Atlas)
+// Signup Endpoint (Customer only)
 const handleSignup = async (req, res) => {
   try {
     const body = req.body || {};
@@ -327,33 +327,31 @@ const handleSignup = async (req, res) => {
       return res.status(400).json({ message: "Email is already registered." });
     }
 
-    await ensureDbConnected();
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({
-        success: false,
-        message: "Database connection unavailable. Please ensure 0.0.0.0/0 (Allow Access From Anywhere) is whitelisted in your MongoDB Atlas Network Access settings."
-      });
-    }
+    const users = readUsers();
 
-    // Check if user already exists in MongoDB
-    const existingUser = await User.findOne({ email: lowerEmail });
-    if (existingUser) {
+    // Check if user already exists
+    if (users.some(u => u.email.toLowerCase() === lowerEmail)) {
       return res.status(400).json({ message: "Email is already registered." });
     }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
+    const newUser = {
+      id: Date.now().toString(),
       fullName: fullName.trim(),
       email: lowerEmail,
       phone: phone.trim(),
-      password: hashedPassword
-    });
+      password: hashedPassword,
+      createdAt: new Date().toISOString()
+    };
+
+    users.push(newUser);
+    writeUsers(users);
 
     // Generate JWT
     const token = jwt.sign(
-      { id: newUser._id.toString(), email: newUser.email, role: "customer" },
+      { id: newUser.id, email: newUser.email, role: "customer" },
       JWT_SECRET,
       { expiresIn: "24h" }
     );
@@ -362,7 +360,7 @@ const handleSignup = async (req, res) => {
       success: true,
       token,
       user: {
-        id: newUser._id.toString(),
+        id: newUser.id,
         fullName: newUser.fullName,
         email: newUser.email,
         phone: newUser.phone,
@@ -382,7 +380,7 @@ app.post([
   "/auth/register", "/auth/register/"
 ], handleSignup);
 
-// Login Endpoint (Admin & Customer - MongoDB Atlas)
+// Login Endpoint (Admin & Customer)
 const handleLogin = async (req, res) => {
   try {
     const body = req.body || {};
@@ -419,20 +417,12 @@ const handleLogin = async (req, res) => {
       }
     }
 
-    // 2. Customer Flow (MongoDB Atlas)
-    await ensureDbConnected();
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({
-        success: false,
-        message: "Database connection unavailable. Please ensure 0.0.0.0/0 (Allow Access From Anywhere) is whitelisted in your MongoDB Atlas Network Access settings."
-      });
-    }
-
-    const user = await User.findOne({ email: lowerEmail });
+    // 2. Customer Flow
+    const users = readUsers();
+    const user = users.find(u => u.email.toLowerCase() === lowerEmail);
     if (!user) {
       return res.status(401).json({ message: "Invalid Email or Password." });
     }
-
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
@@ -440,7 +430,7 @@ const handleLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id.toString(), email: user.email, role: "customer" },
+      { id: user.id, email: user.email, role: "customer" },
       JWT_SECRET,
       { expiresIn: "24h" }
     );
@@ -450,7 +440,7 @@ const handleLogin = async (req, res) => {
       role: "customer",
       token,
       user: {
-        id: user._id.toString(),
+        id: user.id,
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
@@ -489,15 +479,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server after connecting to MongoDB
+// Start Server
 if (require.main === module) {
-  connectDB().then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Food Express Backend server running at http://localhost:${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`🚀 Food Express Backend server running at http://localhost:${PORT}`);
   });
 }
 
 module.exports = app;
-module.exports.connectDB = connectDB;
-

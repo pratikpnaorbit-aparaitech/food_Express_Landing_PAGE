@@ -1,0 +1,48 @@
+[
+  {
+    "id": "1784616919185",
+    "fullName": "Rathod Krushna Sahebrao",
+    "email": "rathodkrushna963@gmail.com",
+    "phone": "09579255157",
+    "password": "$2b$10$xtrROWEYuj2fNVlyuYM9EOYLk/MQM3gn5ruI1THFOZdE/dzhCSP.G",
+    "createdAt": "2026-07-21T06:55:19.186Z"
+  },
+  {
+    "id": "1784617000958",
+    "fullName": "Updated Customer Name",
+    "email": "customer_1784617000671@test.com",
+    "phone": "9998887770",
+    "password": "$2b$10$ceklXvlG9dg6.KBA1fmyEuSvZlsBCPGyANKw2lYGyGtvZJGCyxpY2",
+    "createdAt": "2026-07-21T06:56:40.958Z",
+    "profilePhoto": "",
+    "address": "456 Main St",
+    "updatedAt": "2026-07-21T06:56:41.201Z"
+  },
+  {
+    "id": "1784617001083",
+    "fullName": "Alias Customer",
+    "email": "customer_alias_1784617000998@test.com",
+    "phone": "9876543210",
+    "password": "$2b$10$llCOiduOzHxZboLUN.kRCeMxA1bpgL2/yzrFEoBM0T7HFH4ZFfZL2",
+    "createdAt": "2026-07-21T06:56:41.083Z"
+  },
+  {
+    "id": "1784617152720",
+    "fullName": "Updated Customer Name",
+    "email": "customer_1784617152451@test.com",
+    "phone": "9998887770",
+    "password": "$2b$10$OFo5GuvdFvTDV10rpyWyb.zfiUPb/Jnxy0rqNdrRGwYJsgm3iWk6y",
+    "createdAt": "2026-07-21T06:59:12.720Z",
+    "profilePhoto": "",
+    "address": "456 Main St",
+    "updatedAt": "2026-07-21T06:59:12.932Z"
+  },
+  {
+    "id": "1784617152830",
+    "fullName": "Alias Customer",
+    "email": "customer_alias_1784617152746@test.com",
+    "phone": "9876543210",
+    "password": "$2b$10$klVMNH0DXrB21LSa0PQtyOJaE8dItN.lkmETWpkTv3FUny5s9w886",
+    "createdAt": "2026-07-21T06:59:12.830Z"
+  }
+]
