@@ -72,7 +72,19 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Detailed Request Logger Middleware
+app.use((req, res, next) => {
+  if (["POST", "PUT", "PATCH"].includes(req.method)) {
+    console.log(`\n[API Request] 📩 ${req.method} ${req.originalUrl || req.url}`);
+    console.log(`[API Request] Content-Type:`, req.headers["content-type"]);
+    console.log(`[API Request] Headers:`, JSON.stringify(req.headers));
+    console.log(`[API Request] Body:`, req.body);
+  }
+  next();
+});
 
 // Helper function to read users
 function readUsers() {
@@ -166,6 +178,13 @@ app.get("/api/auth/profile", authenticateToken, (req, res) => {
 // Update Profile Endpoint (Protected)
 app.put("/api/auth/profile", authenticateToken, async (req, res) => {
   try {
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({
+        success: false,
+        message: "Request body is missing"
+      });
+    }
+
     const { fullName, email, phone, profilePhoto, address } = req.body;
 
     if (req.user.role === "admin") {
@@ -221,6 +240,13 @@ app.put("/api/auth/profile", authenticateToken, async (req, res) => {
 // Signup Endpoint (Customer only)
 app.post("/api/auth/signup", async (req, res) => {
   try {
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({
+        success: false,
+        message: "Request body is missing"
+      });
+    }
+
     const { fullName, email, phone, password } = req.body;
 
     if (!fullName || !email || !phone || !password) {
@@ -283,11 +309,20 @@ app.post("/api/auth/signup", async (req, res) => {
 // Login Endpoint (Admin and Customer)
 app.post("/api/auth/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({
+        success: false,
+        message: "Request body is missing"
+      });
+    }
+
+    const email = req.body.email;
+    const password = req.body.password;
 
     if (!email || !password) {
       return res.status(400).json({ message: "Please enter email and password." });
     }
+
 
     const lowerEmail = email.toLowerCase().trim();
 
@@ -373,6 +408,10 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Food Express Backend server running at http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Food Express Backend server running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
