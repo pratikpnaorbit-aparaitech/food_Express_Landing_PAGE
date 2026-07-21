@@ -11,9 +11,26 @@ export async function customFetch(url, options = {}, retries = 2, delayMs = 2000
   let attempt = 0;
   let triedRemoteFallback = false;
 
+  // Force HTTPS for non-localhost remote URLs to prevent 301 HTTP->HTTPS redirect from stripping POST body
+  if (currentUrl.startsWith("http://") && !currentUrl.includes("localhost") && !currentUrl.includes("127.0.0.1")) {
+    currentUrl = currentUrl.replace("http://", "https://");
+  }
+
   const method = (options.method || "GET").toUpperCase();
-  const headers = options.headers || {};
+  const headers = { ...options.headers };
+
+  // Ensure Content-Type is set to application/json if body exists and header is missing
+  if (options.body && !headers["Content-Type"] && !headers["content-type"]) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const body = options.body ? options.body : null;
+  const requestOptions = {
+    ...options,
+    method,
+    headers,
+    body
+  };
 
   while (attempt <= retries) {
     console.log(`[API Request] 🚀 ${method} ${currentUrl}`);
@@ -27,7 +44,7 @@ export async function customFetch(url, options = {}, retries = 2, delayMs = 2000
     }
 
     try {
-      const response = await fetch(currentUrl, options);
+      const response = await fetch(currentUrl, requestOptions);
       
       // Clone response to log body safely without consuming the stream
       try {
@@ -47,7 +64,10 @@ export async function customFetch(url, options = {}, retries = 2, delayMs = 2000
       // If local dev server is not running on port 5000, fall back to live Render API
       if (currentUrl.includes("localhost:5000") && !triedRemoteFallback) {
         console.warn(`[API Fallback] Local backend on localhost:5000 is unreachable. Switching to live Render API: ${REMOTE_API_BASE}`);
-        currentUrl = currentUrl.replace("http://localhost:5000/api", REMOTE_API_BASE);
+        currentUrl = currentUrl.replace(/^http:\/\/localhost:5000\/api/i, REMOTE_API_BASE);
+        if (currentUrl.startsWith("http://") && !currentUrl.includes("localhost")) {
+          currentUrl = currentUrl.replace("http://", "https://");
+        }
         triedRemoteFallback = true;
         attempt = 0;
         continue;
@@ -61,6 +81,7 @@ export async function customFetch(url, options = {}, retries = 2, delayMs = 2000
     }
   }
 }
+
 
 /**
  * Background ping to warm up backend on page load using public health endpoint
