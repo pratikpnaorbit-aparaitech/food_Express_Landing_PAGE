@@ -174,7 +174,8 @@ function authenticateToken(req, res, next) {
 }
 
 // Public Health Check Endpoints
-app.get(["/health", "/api/health"], (req, res) => {
+
+app.get(["/health", "/api/health", "/health/", "/api/health/"], (req, res) => {
   res.status(200).json({
     status: "UP",
     service: "Food Express Backend API",
@@ -183,7 +184,7 @@ app.get(["/health", "/api/health"], (req, res) => {
 });
 
 // Get Profile Endpoint (Protected)
-app.get("/api/auth/profile", authenticateToken, (req, res) => {
+const handleGetProfile = (req, res) => {
   try {
     const users = readUsers();
 
@@ -203,7 +204,7 @@ app.get("/api/auth/profile", authenticateToken, (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    res.json({
+    return res.json({
       success: true,
       user: {
         id: user.id,
@@ -217,12 +218,19 @@ app.get("/api/auth/profile", authenticateToken, (req, res) => {
     });
   } catch (error) {
     console.error("Get profile error:", error);
-    res.status(500).json({ message: "Server error retrieving profile." });
+    return res.status(500).json({ message: "Server error retrieving profile." });
   }
-});
+};
+
+app.get([
+  "/api/auth/profile", "/api/auth/profile/",
+  "/auth/profile", "/auth/profile/",
+  "/api/auth/me", "/api/auth/me/",
+  "/auth/me", "/auth/me/"
+], authenticateToken, handleGetProfile);
 
 // Update Profile Endpoint (Protected)
-app.put("/api/auth/profile", authenticateToken, async (req, res) => {
+const handleUpdateProfile = async (req, res) => {
   try {
     const body = req.body || {};
     const fullName = body.fullName ? String(body.fullName).trim() : "";
@@ -262,7 +270,7 @@ app.put("/api/auth/profile", authenticateToken, async (req, res) => {
 
     writeUsers(users);
 
-    res.json({
+    return res.json({
       success: true,
       message: "Profile updated successfully.",
       user: {
@@ -277,12 +285,17 @@ app.put("/api/auth/profile", authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error("Update profile error:", error);
-    res.status(500).json({ message: "Server error updating profile." });
+    return res.status(500).json({ message: "Server error updating profile." });
   }
-});
+};
+
+app.put([
+  "/api/auth/profile", "/api/auth/profile/",
+  "/auth/profile", "/auth/profile/"
+], authenticateToken, handleUpdateProfile);
 
 // Signup Endpoint (Customer only)
-app.post("/api/auth/signup", async (req, res) => {
+const handleSignup = async (req, res) => {
   try {
     const body = req.body || {};
     const fullName = body.fullName ? String(body.fullName).trim() : "";
@@ -330,7 +343,7 @@ app.post("/api/auth/signup", async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       token,
       user: {
@@ -343,12 +356,19 @@ app.post("/api/auth/signup", async (req, res) => {
     });
   } catch (error) {
     console.error("Signup error:", error);
-    res.status(500).json({ message: "Server error during registration." });
+    return res.status(500).json({ message: "Server error during registration." });
   }
-});
+};
+
+app.post([
+  "/api/auth/signup", "/api/auth/signup/",
+  "/auth/signup", "/auth/signup/",
+  "/api/auth/register", "/api/auth/register/",
+  "/auth/register", "/auth/register/"
+], handleSignup);
 
 // Login Endpoint (Admin and Customer)
-app.post("/api/auth/login", async (req, res) => {
+const handleLogin = async (req, res) => {
   try {
     const body = req.body || {};
     const email = body.email ? String(body.email).trim() : "";
@@ -358,11 +378,9 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(400).json({ success: false, message: "Please enter email and password." });
     }
 
-
-
     const lowerEmail = email.toLowerCase().trim();
 
-    // 1. Admin Flow
+    // 1. Admin Flow (UNCHANGED)
     if (lowerEmail === ADMIN_EMAIL.toLowerCase()) {
       if (password === ADMIN_PASSWORD) {
         const token = jwt.sign(
@@ -421,9 +439,15 @@ app.post("/api/auth/login", async (req, res) => {
     if (res.headersSent) return;
     return res.status(500).json({ message: "Server error during login." });
   }
-});
+};
+
+app.post([
+  "/api/auth/login", "/api/auth/login/",
+  "/auth/login", "/auth/login/"
+], handleLogin);
 
 // 404 Fallback Handler
+
 app.use((req, res, next) => {
   if (res.headersSent) {
     return next();
